@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/header :: head}">
+    <title th:text="${form.id != null} ? 'Editar Pregunta' : 'Nueva Pregunta'">Formulario</title>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <a th:href="@{/pregunta/listar}" class="btn-back" title="Volver">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </a>
+                    <h4 class="fw-bold mb-0" th:text="${form.id != null} ? 'Editar Pregunta' : 'Nueva Pregunta'">Formulario</h4>
+                </div>
+
+                <form th:action="@{/pregunta/guardar}" th:object="${form}" method="post" class="form-card">
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="mb-3">
+                        <label for="enunciado" class="form-label fw-semibold">Enunciado</label>
+                        <textarea id="enunciado" th:field="*{enunciado}" class="form-control"
+                                  th:classappend="${#fields.hasErrors('enunciado')} ? 'is-invalid'" rows="3"
+                                  placeholder="Escribe la pregunta..."></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('enunciado')}" th:errors="*{enunciado}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tipo de pregunta</label>
+                        <div class="tipo-pills">
+                            <label class="tipo-pill" th:classappend="${form.tipo == null || form.tipo == 'VF'} ? 'active'">
+                                <input type="radio" name="tipo" value="VF"
+                                       th:checked="${form.tipo == null || form.tipo == 'VF'}"
+                                       onchange="mostrarCamposTipo()">
+                                Verdadero / Falso
+                            </label>
+                            <label class="tipo-pill" th:classappend="${form.tipo == 'SU'} ? 'active'">
+                                <input type="radio" name="tipo" value="SU"
+                                       th:checked="${form.tipo == 'SU'}"
+                                       onchange="mostrarCamposTipo()">
+                                Selección única
+                            </label>
+                            <label class="tipo-pill" th:classappend="${form.tipo == 'SM'} ? 'active'">
+                                <input type="radio" name="tipo" value="SM"
+                                       th:checked="${form.tipo == 'SM'}"
+                                       onchange="mostrarCamposTipo()">
+                                Selección múltiple
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="camposVF" class="mb-3">
+                        <label class="form-label fw-semibold">Respuesta correcta</label>
+                        <div class="tipo-pills">
+                            <label class="tipo-pill" th:classappend="${form.correcto} ? 'active'">
+                                <input type="radio" name="correcto" value="true" th:checked="${form.correcto}">
+                                Verdadero
+                            </label>
+                            <label class="tipo-pill" th:classappend="${!form.correcto} ? 'active'">
+                                <input type="radio" name="correcto" value="false" th:checked="${!form.correcto}">
+                                Falso
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="camposOpciones" class="mb-3" style="display:none;">
+                        <label class="form-label fw-semibold">Opciones</label>
+                        <div id="opcionesContainer" class="opciones-container">
+                        </div>
+                        <button type="button" class="btn-add-option mt-2" onclick="agregarOpcion()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z"/>
+                            </svg>
+                            Añadir opción
+                        </button>
+                        <div id="campoOpcionCorrectaSU" class="mt-3" style="display:none;">
+                            <label for="opcionCorrecta" class="form-label fw-semibold">Opción correcta (índice)</label>
+                            <input type="number" id="opcionCorrecta" name="opcionCorrecta" class="form-control"
+                                   th:value="${form.opcionCorrecta}" min="0">
+                        </div>
+                        <div id="campoOpcionesCorrectasSM" class="mt-3" style="display:none;">
+                            <label for="opcionesCorrectas" class="form-label fw-semibold">Opciones correctas (índices separados por coma)</label>
+                            <input type="text" id="opcionesCorrectas" name="opcionesCorrectas" class="form-control"
+                                   th:value="${form.opcionesCorrectas}" placeholder="0,2">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="tematicaId" class="form-label fw-semibold">Temática</label>
+                        <select id="tematicaId" th:field="*{tematicaId}" class="form-select"
+                                th:classappend="${#fields.hasErrors('tematicaId')} ? 'is-invalid'" required>
+                            <option value="">Selecciona una temática</option>
+                            <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tematicaId')}" th:errors="*{tematicaId}"></div>
+                    </div>
+
+                    <div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger py-2 mb-3">
+                        Corrige los errores antes de guardar.
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-submit" th:text="${form.id != null} ? 'Guardar cambios' : 'Crear pregunta'">Guardar</button>
+                        <a th:href="@{/pregunta/listar}" class="btn-cancel">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0 small">&copy; <span th:text="${#dates.year(#dates.createNow())}"></span> Trabajo Final &mdash; Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <div th:replace="~{fragments/header :: scripts}"></div>
+
+    <script th:inline="javascript">
+        var opcionesIniciales = /*[[${form.opciones}]]*/ null;
+
+        function mostrarCamposTipo() {
+            const tipo = document.querySelector('input[name="tipo"]:checked').value;
+            document.getElementById('camposVF').style.display = tipo === 'VF' ? 'block' : 'none';
+            var mostrar = tipo === 'SU' || tipo === 'SM';
+            document.getElementById('camposOpciones').style.display = mostrar ? 'block' : 'none';
+            document.getElementById('campoOpcionCorrectaSU').style.display = tipo === 'SU' ? 'block' : 'none';
+            document.getElementById('campoOpcionesCorrectasSM').style.display = tipo === 'SM' ? 'block' : 'none';
+        }
+
+        function renderizarOpciones() {
+            var container = document.getElementById('opcionesContainer');
+            container.innerHTML = '';
+            if (opcionesIniciales && opcionesIniciales.length > 0) {
+                opcionesIniciales.forEach(function(valor) {
+                    agregarOpcion(valor);
+                });
+            } else {
+                agregarOpcion('');
+                agregarOpcion('');
+            }
+        }
+
+        function agregarOpcion(valor) {
+            valor = valor || '';
+            var container = document.getElementById('opcionesContainer');
+            var div = document.createElement('div');
+            div.className = 'opcion-row';
+            div.draggable = true;
+            div.setAttribute('data-index', container.children.length);
+
+            var handle = document.createElement('span');
+            handle.className = 'drag-handle';
+            handle.innerHTML = '&#x2807;';
+            handle.ondragstart = function(e) { e.stopPropagation(); };
+            div.appendChild(handle);
+
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'opciones[' + container.children.length + ']';
+            input.className = 'form-control opcion-input';
+            input.placeholder = 'Opci\u00f3n ' + (container.children.length + 1);
+            input.value = valor;
+            div.appendChild(input);
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn btn-sm btn-outline-danger eliminar-opcion';
+            btn.innerHTML = '&times;';
+            btn.onclick = function() { eliminarOpcion(this); };
+            div.appendChild(btn);
+
+            container.appendChild(div);
+            div.addEventListener('dragstart', onDragStart);
+            div.addEventListener('dragover', onDragOver);
+            div.addEventListener('drop', onDrop);
+            div.addEventListener('dragend', onDragEnd);
+            return div;
+        }
+
+        function eliminarOpcion(btn) {
+            var row = btn.closest('.opcion-row');
+            if (document.querySelectorAll('.opcion-row').length <= 2) return;
+            row.remove();
+            reindexarOpciones();
+        }
+
+        function reindexarOpciones() {
+            var rows = document.querySelectorAll('#opcionesContainer .opcion-row');
+            rows.forEach(function(row, i) {
+                var input = row.querySelector('.opcion-input');
+                input.name = 'opciones[' + i + ']';
+                input.placeholder = 'Opci\u00f3n ' + (i + 1);
+                row.setAttribute('data-index', i);
+            });
+        }
+
+        var draggedRow = null;
+
+        function onDragStart(e) {
+            draggedRow = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-index'));
+        }
+
+        function onDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            var rows = document.querySelectorAll('#opcionesContainer .opcion-row');
+            rows.forEach(function(r) { r.classList.remove('drag-over'); });
+            var target = this.getBoundingClientRect();
+            var midY = target.top + target.height / 2;
+            if (e.clientY < midY) {
+                this.parentNode.insertBefore(draggedRow, this);
+            } else {
+                this.parentNode.insertBefore(draggedRow, this.nextSibling);
+            }
+        }
+
+        function onDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            reindexarOpciones();
+        }
+
+        function onDragEnd(e) {
+            this.classList.remove('dragging');
+            var rows = document.querySelectorAll('#opcionesContainer .opcion-row');
+            rows.forEach(function(r) { r.classList.remove('drag-over'); });
+            draggedRow = null;
+            reindexarOpciones();
+        }
+
+        renderizarOpciones();
+        mostrarCamposTipo();
+    </script>
+</body>
+
+</html>

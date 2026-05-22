@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/header :: head}">
+    <title>Página no encontrada</title>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <main class="container py-5">
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#6c757d" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M7 5.5a1 1 0 1 1 2 0 1 1 0 0 1-2 0m-1 2h2a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H6a.5.5 0 0 1 0-1h1V8H6a.5.5 0 0 1 0-1"/>
+                </svg>
+            </div>
+            <h1 class="display-4 fw-bold text-muted mb-3">404</h1>
+            <div th:if="${mensaje}">
+                <p class="fs-5 mb-1" th:text="${mensaje}">Página no encontrada</p>
+                <p class="text-muted" th:text="${detalle}">El recurso solicitado no existe.</p>
+            </div>
+            <p th:unless="${mensaje}" class="fs-5 text-muted mb-3">La página que buscas no existe.</p>
+            <a th:href="@{/}" class="btn btn-primary mt-3">Volver al inicio</a>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0 small">&copy; <span th:text="${#dates.year(#dates.createNow())}"></span> Trabajo Final</p>
+        </div>
+    </footer>
+
+    <div th:replace="~{fragments/header :: scripts}"></div>
+</body>
+
+</html>

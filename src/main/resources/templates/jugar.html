@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/header :: head}">
+    <title>Jugar</title>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <main class="container py-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Elige una temática</h2>
+            <p class="text-muted">Selecciona el tema sobre el que quieres jugar</p>
+        </div>
+
+        <div class="text-center mb-4">
+            <label class="form-label fw-semibold" style="font-size:0.85rem;">¿Cuántas preguntas?</label>
+            <div class="tipo-pills justify-content-center" id="limitePills">
+                <label class="tipo-pill active" data-val="5">
+                    <input type="radio" name="limite" value="5" checked onchange="marcarPill(this)"> 5
+                </label>
+                <label class="tipo-pill" data-val="10">
+                    <input type="radio" name="limite" value="10" onchange="marcarPill(this)"> 10
+                </label>
+                <label class="tipo-pill" data-val="15">
+                    <input type="radio" name="limite" value="15" onchange="marcarPill(this)"> 15
+                </label>
+                <label class="tipo-pill" data-val="0">
+                    <input type="radio" name="limite" value="0" onchange="marcarPill(this)"> Todas
+                </label>
+            </div>
+        </div>
+
+        <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3 justify-content-center">
+            <div th:each="tematica : ${tematicas}" class="col">
+                <a th:href="@{/jugar/{id}(id=${tematica.id})}" class="text-decoration-none" th:attr="data-id=${tematica.id}">
+                    <div class="game-card text-center" th:attr="onclick='return jugarConLimite(' + ${tematica.id} + ')'">
+                        <div class="game-card-body">
+                            <div class="game-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                </svg>
+                            </div>
+                            <h5 class="game-card-title" th:text="${tematica.nombre}">Temática</h5>
+                            <p class="game-card-count" th:text="${#lists.size(tematica.preguntas)} + ' preguntas'">0 preguntas</p>
+                            <span class="btn-game">Jugar</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <script>
+            function marcarPill(input) {
+                document.querySelectorAll('#limitePills .tipo-pill').forEach(function(p) {
+                    p.classList.remove('active');
+                });
+                input.closest('.tipo-pill').classList.add('active');
+            }
+
+            function jugarConLimite(id) {
+                var seleccionado = document.querySelector('input[name="limite"]:checked');
+                var limite = seleccionado ? seleccionado.value : '0';
+                window.location.href = '/jugar/' + id + '?limite=' + limite;
+                return false;
+            }
+        </script>
+
+        <div th:if="${#lists.isEmpty(tematicas)}" class="empty-state">
+            <p class="text-muted mb-0">No hay temáticas disponibles. Crea algunas primero.</p>
+            <a th:href="@{/pregunta/listar}" class="btn-submit btn-submit-sm mt-3">Ir a Preguntas</a>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0 small">&copy; <span th:text="${#dates.year(#dates.createNow())}"></span> Trabajo Final &mdash; Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <div th:replace="~{fragments/header :: scripts}"></div>
+</body>
+
+</html>

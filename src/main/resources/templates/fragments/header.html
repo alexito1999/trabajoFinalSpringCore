@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} ?: 'Trabajo Final'">Trabajo Final</title>
+    <link rel="stylesheet" th:href="@{/bootstrap-5.3.8/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+    <nav th:fragment="navbar" class="navbar position-relative">
+        <div class="container">
+            <a class="navbar-brand fw-bold" th:href="@{/}">
+                <span class="brand-icon">TF</span>
+            </a>
+
+            <div class="d-flex align-items-center gap-1">
+                <a class="nav-btn" th:href="@{/}">
+                    Inicio
+                </a>
+                <button class="menu-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Menú de navegación">
+                    <span>Menú</span>
+                    <svg class="menu-chevron" xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 12 2 4h12z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeJugar} ? 'active'" th:href="@{/jugar}">Jugar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePreguntas} ? 'active'" th:href="@{/pregunta/listar}">Preguntas</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <script th:fragment="scripts" th:src="@{/bootstrap-5.3.8/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>

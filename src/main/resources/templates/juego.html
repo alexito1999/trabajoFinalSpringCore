@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/header :: head}">
+    <title>Jugando</title>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <main class="container py-5">
+        <div th:if="${total == 0}" class="empty-state">
+            <p class="text-muted mb-0">Esta temática no tiene preguntas aún.</p>
+            <a th:href="@{/jugar}" class="btn-submit btn-submit-sm mt-3">Elegir otra temática</a>
+        </div>
+
+        <div th:if="${total > 0}">
+            <div class="text-center mb-4">
+                <h4 class="fw-bold" th:text="'Temática: ' + ${tematica.nombre}">Temática</h4>
+                <div class="game-stats">
+                    <span class="stat stat-current" id="contador">1 / <span th:text="${total}">0</span></span>
+                    <span class="stat stat-correct" id="aciertos">Aciertos: 0</span>
+                    <span class="stat stat-wrong" id="fallos">Fallos: 0</span>
+                </div>
+                <div class="progress-bar-track">
+                    <div id="barra-progreso" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div id="tarjeta-pregunta" class="question-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge-type" id="tipo-badge">Tipo</span>
+                        </div>
+                        <p id="enunciado" class="game-question-text"></p>
+                        <div id="feedback" class="game-feedback" style="display:none;"></div>
+                        <div id="opciones-container" class="d-flex flex-column gap-2 mb-3"></div>
+                        <div id="botones-container" class="d-flex justify-content-center gap-2"></div>
+                    </div>
+
+                    <div id="resultado-final" class="result-card" style="display: none;">
+                        <div class="result-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M7 5.5a1 1 0 1 1 2 0 1 1 0 0 1-2 0m-1 2h2a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H6a.5.5 0 0 1 0-1h1V8H6a.5.5 0 0 1 0-1"/>
+                            </svg>
+                        </div>
+                        <h3 class="fw-bold mb-2">¡Partida terminada!</h3>
+                        <p id="mensaje-final" class="result-message"></p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a th:href="@{/jugar}" class="btn-submit btn-submit-sm">Otra temática</a>
+                            <a th:href="@{/}" class="btn-cancel">Volver al inicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                const preguntas = [(${preguntasJson})];
+                const totalDisponible = [(${totalDisponible})];
+            </script>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0 small">&copy; <span th:text="${#dates.year(#dates.createNow())}"></span> Trabajo Final &mdash; Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <div th:replace="~{fragments/header :: scripts}"></div>
+
+    <style>
+        .game-feedback {
+            text-align: center;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .game-feedback.correcto { background: rgba(5,150,105,0.1); color: #059669; border: 1px solid rgba(5,150,105,0.2); }
+        .game-feedback.incorrecto { background: rgba(231,76,60,0.1); color: #e74c3c; border: 1px solid rgba(231,76,60,0.2); }
+    </style>
+
+    <script>
+        (function() {
+            const total = preguntas.length;
+            if (total === 0) return;
+
+            let indice = 0;
+            let aciertos = 0;
+            let fallos = 0;
+            let bloqueado = false;
+
+            const feedback = document.getElementById('feedback');
+            const enunciado = document.getElementById('enunciado');
+            const contador = document.getElementById('contador');
+            const barra = document.getElementById('barra-progreso');
+            const aciertosEl = document.getElementById('aciertos');
+            const fallosEl = document.getElementById('fallos');
+            const tipoBadge = document.getElementById('tipo-badge');
+            const opcionesContainer = document.getElementById('opciones-container');
+            const botonesContainer = document.getElementById('botones-container');
+            const tarjeta = document.getElementById('tarjeta-pregunta');
+            const resultadoFinal = document.getElementById('resultado-final');
+            const mensajeFinal = document.getElementById('mensaje-final');
+
+            function mostrarPregunta() {
+                if (indice >= total) {
+                    tarjeta.style.display = 'none';
+                    resultadoFinal.style.display = 'block';
+                    var texto = `Acertaste ${aciertos} de ${total} preguntas (${Math.round(aciertos / total * 100)}%)`;
+                    if (totalDisponible > total) {
+                        texto += ` (de ${totalDisponible} disponibles en la temática)`;
+                    }
+                    mensajeFinal.textContent = texto;
+                    return;
+                }
+                const p = preguntas[indice];
+                enunciado.textContent = p.enunciado;
+                contador.innerHTML = `${indice + 1} / ${total}`;
+                barra.style.width = `${(indice / total) * 100}%`;
+                feedback.style.display = 'none';
+                bloqueado = false;
+
+                opcionesContainer.innerHTML = '';
+                botonesContainer.innerHTML = '';
+
+                if (p.tipo === 'VF') {
+                    tipoBadge.textContent = 'Verdadero / Falso';
+                    const btnV = document.createElement('button');
+                    btnV.className = 'btn-vf';
+                    btnV.textContent = 'Verdadero';
+                    btnV.addEventListener('click', () => responder(true));
+                    const btnF = document.createElement('button');
+                    btnF.className = 'btn-vf btn-vf-false';
+                    btnF.textContent = 'Falso';
+                    btnF.addEventListener('click', () => responder(false));
+                    botonesContainer.appendChild(btnV);
+                    botonesContainer.appendChild(btnF);
+                } else if (p.tipo === 'SU') {
+                    tipoBadge.textContent = 'Selección única';
+                    const grupo = document.createElement('div');
+                    grupo.className = 'game-options';
+                    p.opciones.forEach((opcion, i) => {
+                        const label = document.createElement('label');
+                        label.className = 'game-option';
+                        const input = document.createElement('input');
+                        input.type = 'radio';
+                        input.name = 'opcion';
+                        input.value = i;
+                        const span = document.createElement('span');
+                        span.textContent = opcion;
+                        label.appendChild(input);
+                        label.appendChild(span);
+                        grupo.appendChild(label);
+                    });
+                    opcionesContainer.appendChild(grupo);
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-submit btn-submit-sm';
+                    btn.textContent = 'Responder';
+                    btn.addEventListener('click', () => {
+                        if (bloqueado) return;
+                        const seleccionado = document.querySelector('input[name="opcion"]:checked');
+                        if (!seleccionado) {
+                            feedback.textContent = 'Selecciona una opción';
+                            feedback.className = 'game-feedback incorrecto';
+                            feedback.style.display = 'block';
+                            setTimeout(() => { feedback.style.display = 'none'; }, 800);
+                            return;
+                        }
+                        const esCorrecto = parseInt(seleccionado.value) === p.opcionCorrecta;
+                        responder(esCorrecto);
+                    });
+                    botonesContainer.appendChild(btn);
+                } else if (p.tipo === 'SM') {
+                    tipoBadge.textContent = 'Selección múltiple';
+                    const grupo = document.createElement('div');
+                    grupo.className = 'game-options';
+                    p.opciones.forEach((opcion, i) => {
+                        const label = document.createElement('label');
+                        label.className = 'game-option';
+                        const input = document.createElement('input');
+                        input.type = 'checkbox';
+                        input.value = i;
+                        const span = document.createElement('span');
+                        span.textContent = opcion;
+                        label.appendChild(input);
+                        label.appendChild(span);
+                        grupo.appendChild(label);
+                    });
+                    opcionesContainer.appendChild(grupo);
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-submit btn-submit-sm';
+                    btn.textContent = 'Comprobar';
+                    btn.addEventListener('click', () => {
+                        if (bloqueado) return;
+                        const checks = document.querySelectorAll('#opciones-container input[type="checkbox"]');
+                        const seleccionados = [];
+                        checks.forEach((c) => {
+                            if (c.checked) seleccionados.push(parseInt(c.value));
+                        });
+                        if (seleccionados.length === 0) {
+                            feedback.textContent = 'Selecciona al menos una opción';
+                            feedback.className = 'game-feedback incorrecto';
+                            feedback.style.display = 'block';
+                            setTimeout(() => { feedback.style.display = 'none'; }, 800);
+                            return;
+                        }
+                        const correctos = p.opcionesCorrectas.slice().sort();
+                        const elegidos = seleccionados.slice().sort();
+                        const esCorrecto = correctos.length === elegidos.length &&
+                            correctos.every((v, i) => v === elegidos[i]);
+                        responder(esCorrecto);
+                    });
+                    botonesContainer.appendChild(btn);
+                }
+            }
+
+            function responder(esCorrecto) {
+                if (bloqueado) return;
+                bloqueado = true;
+
+                deshabilitarInputs();
+
+                if (esCorrecto) {
+                    aciertos++;
+                    aciertosEl.textContent = `Aciertos: ${aciertos}`;
+                } else {
+                    fallos++;
+                    fallosEl.textContent = `Fallos: ${fallos}`;
+                }
+
+                feedback.textContent = esCorrecto ? '¡Correcto!' : 'Incorrecto';
+                feedback.className = 'game-feedback ' + (esCorrecto ? 'correcto' : 'incorrecto');
+                feedback.style.display = 'block';
+
+                indice++;
+                barra.style.width = `${(indice / total) * 100}%`;
+
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                    mostrarPregunta();
+                }, 800);
+            }
+
+            function deshabilitarInputs() {
+                botonesContainer.querySelectorAll('button').forEach(b => b.disabled = true);
+                opcionesContainer.querySelectorAll('input').forEach(i => i.disabled = true);
+            }
+
+            mostrarPregunta();
+        })();
+    </script>
+</body>
+
+</html>
