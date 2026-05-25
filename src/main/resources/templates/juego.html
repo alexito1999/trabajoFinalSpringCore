@@ -23,6 +23,7 @@
                     <span class="stat stat-correct" id="aciertos">Aciertos: 0</span>
                     <span class="stat stat-wrong" id="fallos">Fallos: 0</span>
                 </div>
+                
                 <div class="progress-bar-track">
                     <div id="barra-progreso" class="progress-bar-fill" style="width: 0%"></div>
                 </div>
@@ -56,9 +57,8 @@
                 </div>
             </div>
 
-            <script>
-                const preguntas = [(${preguntasJson})];
-                const totalDisponible = [(${totalDisponible})];
+            <script th:inline="javascript">
+                const preguntas = [[${preguntas}]];
             </script>
         </div>
     </main>
@@ -71,7 +71,7 @@
 
     <div th:replace="~{fragments/header :: scripts}"></div>
 
-    <style>
+     <style>
         .game-feedback {
             text-align: center;
             padding: 0.5rem 1rem;
@@ -83,7 +83,7 @@
         }
         .game-feedback.correcto { background: rgba(5,150,105,0.1); color: #059669; border: 1px solid rgba(5,150,105,0.2); }
         .game-feedback.incorrecto { background: rgba(231,76,60,0.1); color: #e74c3c; border: 1px solid rgba(231,76,60,0.2); }
-    </style>
+     </style>
 
     <script>
         (function() {
@@ -113,9 +113,7 @@
                     tarjeta.style.display = 'none';
                     resultadoFinal.style.display = 'block';
                     var texto = `Acertaste ${aciertos} de ${total} preguntas (${Math.round(aciertos / total * 100)}%)`;
-                    if (totalDisponible > total) {
-                        texto += ` (de ${totalDisponible} disponibles en la temática)`;
-                    }
+                   
                     mensajeFinal.textContent = texto;
                     return;
                 }
@@ -134,11 +132,11 @@
                     const btnV = document.createElement('button');
                     btnV.className = 'btn-vf';
                     btnV.textContent = 'Verdadero';
-                    btnV.addEventListener('click', () => responder(true));
+                    btnV.addEventListener('click', () => responder(p.correcto === true));
                     const btnF = document.createElement('button');
                     btnF.className = 'btn-vf btn-vf-false';
                     btnF.textContent = 'Falso';
-                    btnF.addEventListener('click', () => responder(false));
+                    btnF.addEventListener('click', () => responder(p.correcto === false));
                     botonesContainer.appendChild(btnV);
                     botonesContainer.appendChild(btnF);
                 } else if (p.tipo === 'SU') {

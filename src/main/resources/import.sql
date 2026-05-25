@@ -43,6 +43,8 @@ INSERT INTO su_opciones (pregunta_id, opcion) VALUES (23, 'MongoDB');
 INSERT INTO su_opciones (pregunta_id, opcion) VALUES (23, 'PostgreSQL');
 INSERT INTO su_opciones (pregunta_id, opcion) VALUES (23, 'MariaDB');
 
+
+
 -- SM (Selección múltiple)
 INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Cuáles son frameworks de CSS?', 3);
 INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (24, 'Bootstrap');
@@ -60,3 +62,164 @@ INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (25, 'Subversion (SVN)');
 INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (25, 'Kubernetes');
 INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (25, 0);
 INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (25, 2);
+
+--Adicionales de SU
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué etiqueta HTML se usa para crear un enlace?', 1, 3);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (26, 'img');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (26, 'a');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (26, 'div');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (26, 'p');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué protocolo usa HTTPS?', 2, 3);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (27, 'FTP');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (27, 'SMTP');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (27, 'SSL/TLS');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (27, 'SSH');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Cuál es una base de datos relacional?', 0, 2);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (28, 'PostgreSQL');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (28, 'MongoDB');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (28, 'Redis');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (28, 'Cassandra');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué herramienta se usa para contenerización?', 3, 4);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (29, 'Git');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (29, 'Maven');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (29, 'JUnit');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (29, 'Docker');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué lenguaje se ejecuta principalmente en el navegador?', 2, 1);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (30, 'Java');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (30, 'Python');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (30, 'JavaScript');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (30, 'C#');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué comando SQL obtiene datos?', 1, 2);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (31, 'DELETE');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (31, 'SELECT');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (31, 'DROP');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (31, 'UPDATE');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué framework pertenece a Java?', 0, 1);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (32, 'Spring Boot');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (32, 'Laravel');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (32, 'Express');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (32, 'Flask');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué herramienta compila y gestiona dependencias en Java?', 2, 4);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (33, 'Git');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (33, 'Docker');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (33, 'Maven');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (33, 'Postman');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué lenguaje da estilo a páginas web?', 1, 3);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (34, 'HTML');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (34, 'CSS');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (34, 'SQL');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (34, 'Java');
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué herramienta sirve para pruebas unitarias?', 3, 4);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'Hibernate');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'NodeJS');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'Bootstrap');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'JUnit');
+
+--ADICIONALES DE SM
+
+
+INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué herramienta sirve para pruebas unitarias?', 3, 4);
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'Hibernate');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'NodeJS');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'Bootstrap');
+INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'JUnit');
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Cuáles son lenguajes de programación?', 1);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (36, 'Java');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (36, 'Python');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (36, 'HTML');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (36, 'C++');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (36, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (36, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (36, 3);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué tecnologías son de frontend?', 3);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (37, 'HTML');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (37, 'CSS');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (37, 'JavaScript');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (37, 'MySQL');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (37, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (37, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (37, 2);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Cuáles son bases de datos relacionales?', 2);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (38, 'MySQL');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (38, 'PostgreSQL');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (38, 'MongoDB');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (38, 'MariaDB');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (38, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (38, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (38, 3);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué herramientas sirven para testing?', 4);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (39, 'JUnit');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (39, 'Mockito');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (39, 'Docker');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (39, 'Selenium');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (39, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (39, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (39, 3);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué herramientas son de control de versiones?', 4);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (40, 'Git');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (40, 'SVN');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (40, 'Docker');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (40, 'Mercurial');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (40, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (40, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (40, 3);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué son frameworks backend?', 1);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (41, 'Spring Boot');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (41, 'Laravel');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (41, 'Bootstrap');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (41, 'Django');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (41, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (41, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (41, 3);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué tecnologías usan Java?', 1);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (42, 'Spring');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (42, 'Hibernate');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (42, 'JPA');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (42, 'React');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (42, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (42, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (42, 2);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué etiquetas son HTML?', 3);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (43, 'div');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (43, 'span');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (43, 'SELECT');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (43, 'p');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (43, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (43, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (43, 3);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué herramientas son de despliegue o contenedores?', 4);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (44, 'Docker');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (44, 'Kubernetes');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (44, 'Git');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (44, 'Podman');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (44, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (44, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (44, 3);
+
+INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué son sistemas gestores de bases de datos?', 2);
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (45, 'MySQL');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (45, 'PostgreSQL');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (45, 'MongoDB');
+INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (45, 'VSCode');
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (45, 0);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (45, 1);
+INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (45, 2);

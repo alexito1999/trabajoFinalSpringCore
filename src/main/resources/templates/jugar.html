@@ -17,18 +17,18 @@
 
         <div class="text-center mb-4">
             <label class="form-label fw-semibold" style="font-size:0.85rem;">¿Cuántas preguntas?</label>
-            <div class="tipo-pills justify-content-center" id="limitePills">
+            <div class="tipo-pills justify-content-center" id="cantidadPills">
                 <label class="tipo-pill active" data-val="5">
-                    <input type="radio" name="limite" value="5" checked onchange="marcarPill(this)"> 5
+                    <input type="radio" name="cantidad" value="5" checked onchange="marcarPill(this)"> 5
                 </label>
                 <label class="tipo-pill" data-val="10">
-                    <input type="radio" name="limite" value="10" onchange="marcarPill(this)"> 10
+                    <input type="radio" name="cantidad" value="10" onchange="marcarPill(this)"> 10
                 </label>
-                <label class="tipo-pill" data-val="15">
-                    <input type="radio" name="limite" value="15" onchange="marcarPill(this)"> 15
+                <label class="tipo-pill" data-val="20">
+                    <input type="radio" name="cantidad" value="20" onchange="marcarPill(this)"> 20
                 </label>
                 <label class="tipo-pill" data-val="0">
-                    <input type="radio" name="limite" value="0" onchange="marcarPill(this)"> Todas
+                    <input type="radio" name="cantidad" value="0" onchange="marcarPill(this)"> Todas
                 </label>
             </div>
         </div>
@@ -36,7 +36,7 @@
         <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3 justify-content-center">
             <div th:each="tematica : ${tematicas}" class="col">
                 <a th:href="@{/jugar/{id}(id=${tematica.id})}" class="text-decoration-none" th:attr="data-id=${tematica.id}">
-                    <div class="game-card text-center" th:attr="onclick='return jugarConLimite(' + ${tematica.id} + ')'">
+                    <div class="game-card text-center" th:attr="onclick='return jugarConCantidad(' + ${tematica.id} + ')'">
                         <div class="game-card-body">
                             <div class="game-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" viewBox="0 0 16 16">
@@ -54,16 +54,16 @@
 
         <script>
             function marcarPill(input) {
-                document.querySelectorAll('#limitePills .tipo-pill').forEach(function(p) {
+                document.querySelectorAll('#cantidadPills .tipo-pill').forEach(function(p) {
                     p.classList.remove('active');
                 });
                 input.closest('.tipo-pill').classList.add('active');
             }
 
-            function jugarConLimite(id) {
-                var seleccionado = document.querySelector('input[name="limite"]:checked');
-                var limite = seleccionado ? seleccionado.value : '0';
-                window.location.href = '/jugar/' + id + '?limite=' + limite;
+            function jugarConCantidad(id) {
+                var seleccionado = document.querySelector('input[name="cantidad"]:checked');
+                var cantidad = seleccionado ? seleccionado.value : '10';
+                window.location.href = '/jugar/' + id + '?cantidad=' + cantidad;
                 return false;
             }
         </script>

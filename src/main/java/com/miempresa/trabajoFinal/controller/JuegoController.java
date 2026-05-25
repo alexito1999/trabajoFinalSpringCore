@@ -34,58 +34,46 @@ public class JuegoController {
 
     @GetMapping("/{tematicaId}")
     public String jugar(@PathVariable Long tematicaId,
-                        @RequestParam(defaultValue = "0") int limite,
+                        @RequestParam(defaultValue = "10") int cantidad,
                         Model model) {
         List<Pregunta> preguntas = preguntaServiceImpl.listarPorTematica(tematicaId);
         int totalDisponible = preguntas.size();
 
-        if (limite > 0 && preguntas.size() > limite) {
+        if (cantidad > 0 && preguntas.size() > cantidad) {
             Collections.shuffle(preguntas);
-            preguntas = preguntas.subList(0, limite);
+            preguntas = preguntas.subList(0, cantidad);
         }
 
         var tematica = preguntaServiceImpl.listarTematicas().stream()
             .filter(t -> t.getId().equals(tematicaId))
             .findFirst().orElse(null);
 
-        StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < preguntas.size(); i++) {
-            Pregunta p = preguntas.get(i);
-            json.append("{");
-            json.append("\"tipo\":\"").append(p.getTipo()).append("\",");
-            json.append("\"enunciado\":\"").append(escapeJson(p.getEnunciado())).append("\"");
-
+        // Build a list of simple DTOs for the view (instead of a JSON string)
+        java.util.List<java.util.Map<String, Object>> preguntasDto = new java.util.ArrayList<>();
+        for (Pregunta p : preguntas) {
+            java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("tipo", p.getTipo());
+            map.put("enunciado", p.getEnunciado());
             if (p instanceof PreguntaVerdaderoFalso vf) {
-                json.append(",\"correcto\":").append(vf.isCorrecto());
+                map.put("correcto", vf.isCorrecto());
             } else if (p instanceof PreguntaSeleccionUnica su) {
-                json.append(",\"opciones\":[");
-                json.append(su.getOpciones().stream()
-                    .map(o -> "\"" + escapeJson(o) + "\"")
-                    .collect(Collectors.joining(",")));
-                json.append("],\"opcionCorrecta\":").append(su.getOpcionCorrecta());
+                map.put("opciones", su.getOpciones());
+                map.put("opcionCorrecta", su.getOpcionCorrecta());
             } else if (p instanceof PreguntaSeleccionMultiple sm) {
-                json.append(",\"opciones\":[");
-                json.append(sm.getOpciones().stream()
-                    .map(o -> "\"" + escapeJson(o) + "\"")
-                    .collect(Collectors.joining(",")));
-                json.append("],\"opcionesCorrectas\":[");
-                json.append(sm.getOpcionesCorrectas().stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(",")));
-                json.append("]");
+                map.put("opciones", sm.getOpciones());
+                map.put("opcionesCorrectas", sm.getOpcionesCorrectas());
             }
-
-            json.append("}");
-            if (i < preguntas.size() - 1) json.append(",");
+            preguntasDto.add(map);
         }
-        json.append("]");
-
-        model.addAttribute("preguntasJson", json.toString());
-        model.addAttribute("total", preguntas.size());
+        
+        // Pass data to the view
+        model.addAttribute("preguntas", preguntasDto);
+        model.addAttribute("total", preguntasDto.size());
         model.addAttribute("totalDisponible", totalDisponible);
         model.addAttribute("tematica", tematica);
         model.addAttribute("activeJugar", true);
         return "juego";
+
     }
 
     private String escapeJson(String s) {
