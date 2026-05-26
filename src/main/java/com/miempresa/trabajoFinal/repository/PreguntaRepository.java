@@ -17,9 +17,11 @@ public interface PreguntaRepository extends JpaRepository<Pregunta, Long>{
 
     @Query("SELECT p FROM Pregunta p WHERE " +
            "(:tematicaId IS NULL OR p.tematica.id = :tematicaId) AND " +
-           "(:tipo IS NULL OR p.tipo = :tipo)")
+           "(:tipo IS NULL OR p.tipo = :tipo) AND " +
+           "(:texto IS NULL OR LOWER(p.enunciado) LIKE LOWER(CONCAT('%', :texto, '%')))")
     Page<Pregunta> filtrar(@Param("tematicaId") Long tematicaId,
                            @Param("tipo") String tipo,
+                           @Param("texto") String texto,
                            Pageable pageable);
 
     @Query(value = "SELECT COUNT(*) FROM pregunta WHERE tipo = 'VF' AND correcto = true", nativeQuery = true)

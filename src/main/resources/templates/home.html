@@ -9,6 +9,9 @@
     <div th:replace="~{fragments/header :: navbar}"></div>
 
     <main>
+        <div class="bg-decoration bg-blob-1" aria-hidden="true"></div>
+        <div class="bg-decoration bg-blob-2" aria-hidden="true"></div>
+        <div class="bg-decoration bg-blob-3" aria-hidden="true"></div>
         <!-- Hero -->
         <section class="hero-section">
             <div class="container">
@@ -27,7 +30,7 @@
         <div class="container">
 
             <!-- Stats -->
-            <section class="section-spacer">
+            <section id="section-stats" class="section-spacer">
                 <div class="stats-row">
                     <div class="stat-card">
                         <div class="stat-number" th:text="${totalPreguntas}">0</div>
@@ -46,16 +49,16 @@
 
             <!-- Divider -->
             <div class="section-divider">
-                <span class="divider-dot"></span>
-                <span class="divider-dot"></span>
-                <span class="divider-dot"></span>
+                <a href="#section-stats" class="divider-dot"></a>
+                <a href="#section-tematicas" class="divider-dot"></a>
+                <a href="#section-actions" class="divider-dot"></a>
             </div>
 
             <!-- Temáticas Carousel -->
-            <section class="section-spacer" th:if="${not #lists.isEmpty(tematicas)}">
+            <section id="section-tematicas" class="section-spacer" th:if="${not #lists.isEmpty(tematicas)}">
                 <div class="section-header">
-                    <h2 class="section-title">Explora temáticas</h2>
-                    <p class="section-desc">Elegí un tema y empezá a practicar</p>
+                    <h2 class="section-title">Tem&aacute;ticas destacadas</h2>
+                    <p class="section-desc">Las m&aacute;s populares entre los estudiantes</p>
                 </div>
 
                 <div class="carousel-wrapper" id="carouselWrapper">
@@ -66,17 +69,23 @@
                     </button>
                     <div class="carousel-viewport">
                         <div class="carousel-track" id="carouselTrack">
-                            <div th:each="tematica : ${tematicas}" class="carousel-slide">
+                            <div th:each="tematica, stat : ${tematicas}" class="carousel-slide">
                                 <a th:href="@{/jugar/{id}(id=${tematica.id})}" class="carousel-card-link">
-                                    <div class="carousel-card">
+                                    <div class="carousel-card" th:classappend="|accent-${stat.index % 5}|">
+                                        <span class="carousel-badge" th:if="${stat.index lt 3}">Destacada</span>
                                         <div class="carousel-card-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M2.5 0a.5.5 0 0 1 .5.5V2h10V.5a.5.5 0 0 1 1 0v2h.5a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13V3.5A1.5 1.5 0 0 1 1.5 2H2V.5a.5.5 0 0 1 .5-.5M2 3v2h12V3zm12 3H2v7a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5z"/>
                                             </svg>
                                         </div>
-                                        <h3 class="carousel-card-title" th:text="${tematica.nombre}">Temática</h3>
-                                        <p class="carousel-card-count" th:text="${#lists.size(tematica.preguntas)} + ' preguntas'">0</p>
+                                        <h3 class="carousel-card-title" th:text="${tematica.nombre}">Tem&aacute;tica</h3>
+                                        <p class="carousel-card-count">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"/>
+                                            </svg>
+                                            <span th:text="${preguntasPorTematica[tematica.id]} + ' preguntas'">0</span>
+                                        </p>
+                                        <span class="carousel-cta">Jugar ahora</span>
                                     </div>
                                 </a>
                             </div>
@@ -94,31 +103,31 @@
 
             <!-- Divider -->
             <div class="section-divider">
-                <span class="divider-dot"></span>
-                <span class="divider-dot"></span>
-                <span class="divider-dot"></span>
+                <a href="#section-stats" class="divider-dot"></a>
+                <a href="#section-tematicas" class="divider-dot"></a>
+                <a href="#section-actions" class="divider-dot"></a>
             </div>
 
             <!-- Quick Actions -->
-            <section class="section-spacer">
+            <section id="section-actions" class="section-spacer">
                 <div class="section-header">
                     <h2 class="section-title">Empezá ahora</h2>
                     <p class="section-desc">Elegí lo que querés hacer</p>
                 </div>
 
                 <div class="actions-row">
-                    <a th:href="@{/pregunta/nueva}" class="action-card">
+                    <a th:if="${autenticado}" th:href="@{/pregunta/nueva}" class="action-card">
                         <div class="action-icon action-icon-purple">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
                             </svg>
                         </div>
                         <h3 class="action-title">Crear Pregunta</h3>
-                        <p class="action-desc">Aportá con tus conocimientos</p>
+                        <p class="action-desc">Aport&aacute; con tus conocimientos</p>
                         <span class="action-btn">Nueva Pregunta</span>
                     </a>
 
-                    <a th:href="@{/pregunta/listar}" class="action-card">
+                    <a th:if="${autenticado}" th:href="@{/pregunta/listar}" class="action-card">
                         <div class="action-icon action-icon-green">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a1 1 0 0 1 .707.293l2.853 2.853A.5.5 0 0 0 16 13.5V2a1 1 0 0 0-1-1z"/>
@@ -126,8 +135,19 @@
                             </svg>
                         </div>
                         <h3 class="action-title">Ver Preguntas</h3>
-                        <p class="action-desc">Administrá y editá el banco</p>
+                        <p class="action-desc">Explor&aacute; el banco de preguntas</p>
                         <span class="action-btn">Ir al listado</span>
+                    </a>
+
+                    <a th:unless="${autenticado}" th:href="@{/registro}" class="action-card">
+                        <div class="action-icon action-icon-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                            </svg>
+                        </div>
+                        <h3 class="action-title">Unite</h3>
+                        <p class="action-desc">Registrate y aport&aacute; preguntas</p>
+                        <span class="action-btn">Crear cuenta</span>
                     </a>
 
                     <a th:href="@{/jugar}" class="action-card">
@@ -138,7 +158,7 @@
                             </svg>
                         </div>
                         <h3 class="action-title">Jugar</h3>
-                        <p class="action-desc">Poné a prueba tus conocimientos</p>
+                        <p class="action-desc">Pon&eacute; a prueba tus conocimientos</p>
                         <span class="action-btn">Comenzar</span>
                     </a>
                 </div>
@@ -147,7 +167,7 @@
         </div>
     </main>
 
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <footer class="bg-dark text-white text-center py-3">
         <div class="container">
             <p class="mb-0 small">&copy; <span th:text="${#dates.year(#dates.createNow())}"></span> Trabajo Final &mdash; Todos los derechos reservados</p>
         </div>

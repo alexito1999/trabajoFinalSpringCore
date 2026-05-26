@@ -37,13 +37,16 @@ public class PreguntaController {
                                   @RequestParam(defaultValue = "6") int size,
                                   @RequestParam(required = false) Long tematicaId,
                                   @RequestParam(required = false) String tipo,
+                                  @RequestParam(required = false) String texto,
                                   Model model) {
         if (tipo != null && tipo.isEmpty()) tipo = null;
+        if (texto != null && texto.isEmpty()) texto = null;
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        model.addAttribute("pagina", preguntaServiceImpl.filtrarPreguntas(tematicaId, tipo, pageRequest));
+        model.addAttribute("pagina", preguntaServiceImpl.filtrarPreguntas(tematicaId, tipo, texto, pageRequest));
         model.addAttribute("tematicas", preguntaServiceImpl.listarTematicas());
         model.addAttribute("tematicaId", tematicaId);
         model.addAttribute("tipoFiltro", tipo);
+        model.addAttribute("textoBusqueda", texto);
         model.addAttribute("activePreguntas", true);
         return "lista-pregunta";
     }

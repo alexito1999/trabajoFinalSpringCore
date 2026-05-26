@@ -15,7 +15,7 @@
                 <h4 class="fw-bold mb-0">Listado de Preguntas</h4>
                 <span class="badge-count" th:text="${pagina.totalElements} + ' preguntas'">0 preguntas</span>
             </div>
-            <a th:href="@{/pregunta/nueva}" class="btn-submit btn-submit-sm">
+            <a th:if="${autenticado}" th:href="@{/pregunta/nueva}" class="btn-submit btn-submit-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z"/>
                 </svg>
@@ -25,6 +25,11 @@
 
         <form th:action="@{/pregunta/listar}" method="get" class="filters-bar" onsubmit="return limpiarFiltros(this)">
             <div class="filters-row">
+                <div class="filter-group">
+                    <label class="filter-label">Buscar</label>
+                    <input type="text" name="texto" class="form-control filter-select" placeholder="Buscar por texto..."
+                           th:value="${textoBusqueda}">
+                </div>
                 <div class="filter-group">
                     <label class="filter-label">Temática</label>
                     <select name="tematicaId" class="form-select filter-select">
@@ -53,6 +58,12 @@
                         selects[i].disabled = true;
                     }
                 }
+                var inputs = form.querySelectorAll('input[type="text"]');
+                for (var i = 0; i < inputs.length; i++) {
+                    if (inputs[i].value === '') {
+                        inputs[i].disabled = true;
+                    }
+                }
                 return true;
             }
         </script>
@@ -65,7 +76,7 @@
                         <span class="badge-topic" th:if="${pregunta.tematica}" th:text="${pregunta.tematica.nombre}">Temática</span>
                     </div>
                     <p class="question-text" th:text="${pregunta.enunciado}">Enunciado</p>
-                    <div class="question-card-actions">
+                    <div th:if="${esAdmin}" class="question-card-actions">
                         <a th:href="@{/pregunta/editar/{id}(id=${pregunta.id})}" class="btn-action btn-action-edit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
@@ -88,13 +99,13 @@
 
         <div th:if="${pagina.totalElements == 0}" class="empty-state">
             <p class="text-muted mb-0">No hay preguntas registradas.</p>
-            <a th:href="@{/pregunta/nueva}" class="btn-submit btn-submit-sm mt-3">Crear primera pregunta</a>
+            <a th:if="${autenticado}" th:href="@{/pregunta/nueva}" class="btn-submit btn-submit-sm mt-3">Crear primera pregunta</a>
         </div>
 
         <nav th:if="${pagina.totalPages > 1}" class="mt-4">
             <ul class="pagination-custom">
                 <li th:classappend="${pagina.first} ? 'disabled'">
-                    <a class="page-btn" th:href="@{/pregunta/listar(page=${pagina.number - 1}, size=${pagina.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro})}">
+                    <a class="page-btn" th:href="@{/pregunta/listar(page=${pagina.number - 1}, size=${pagina.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro}, texto=${textoBusqueda})}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
                         </svg>
@@ -102,10 +113,10 @@
                 </li>
                 <li th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
                     th:classappend="${i == pagina.number} ? 'active'">
-                    <a class="page-btn" th:href="@{/pregunta/listar(page=${i}, size=${pagina.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro})}" th:text="${i + 1}">1</a>
+                    <a class="page-btn" th:href="@{/pregunta/listar(page=${i}, size=${pagina.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro}, texto=${textoBusqueda})}" th:text="${i + 1}">1</a>
                 </li>
                 <li th:classappend="${pagina.last} ? 'disabled'">
-                    <a class="page-btn" th:href="@{/pregunta/listar(page=${pagina.number + 1}, size=${pagina.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro})}">
+                    <a class="page-btn" th:href="@{/pregunta/listar(page=${pagina.number + 1}, size=${pagina.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro}, texto=${textoBusqueda})}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
                         </svg>
@@ -115,7 +126,7 @@
         </nav>
     </main>
 
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <footer class="bg-dark text-white text-center py-3">
         <div class="container">
             <p class="mb-0 small">&copy; <span th:text="${#dates.year(#dates.createNow())}"></span> Trabajo Final &mdash; Todos los derechos reservados</p>
         </div>

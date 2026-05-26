@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,13 +43,15 @@ public class PreguntaApiController {
     private PreguntaServiceImpl preguntaServiceImpl;
 
     @GetMapping
-    @Operation(summary = "Listar preguntas", description = "Devuelve una lista paginada de preguntas, con filtros opcionales por temática y tipo")
+    @Operation(summary = "Listar preguntas", description = "Devuelve una lista paginada de preguntas, con filtros opcionales por temática, tipo y texto")
     public ResponseEntity<Page<PreguntaResponse>> listar(
             @RequestParam(required = false) @Parameter(description = "Filtrar por ID de temática") Long tematicaId,
             @RequestParam(required = false) @Parameter(description = "Filtrar por tipo (VF, SU, SM)") String tipo,
+            @RequestParam(required = false) @Parameter(description = "Buscar por texto en el enunciado") String texto,
             @ParameterObject @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         if (tipo != null && tipo.isEmpty()) tipo = null;
-        Page<Pregunta> pagina = preguntaServiceImpl.filtrarPreguntas(tematicaId, tipo, pageable);
+        if (texto != null && texto.isEmpty()) texto = null;
+        Page<Pregunta> pagina = preguntaServiceImpl.filtrarPreguntas(tematicaId, tipo, texto, pageable);
         Page<PreguntaResponse> respuesta = pagina.map(this::toResponse);
         return ResponseEntity.ok(respuesta);
     }
@@ -64,6 +67,7 @@ public class PreguntaApiController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Crear pregunta", description = "Crea una nueva pregunta")
     public ResponseEntity<PreguntaResponse> crear(@Valid @RequestBody PreguntaRequest request) {
         Tematica tematica = preguntaServiceImpl.obtenerTematica(request.getTematicaId());
@@ -81,6 +85,7 @@ public class PreguntaApiController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Actualizar pregunta", description = "Actualiza una pregunta existente")
     public ResponseEntity<PreguntaResponse> actualizar(@PathVariable Long id, @Valid @RequestBody PreguntaRequest request) {
         Pregunta existente = preguntaServiceImpl.obtenerPregunta(id);
@@ -103,6 +108,7 @@ public class PreguntaApiController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Eliminar pregunta", description = "Elimina una pregunta por su ID")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         Pregunta pregunta = preguntaServiceImpl.obtenerPregunta(id);

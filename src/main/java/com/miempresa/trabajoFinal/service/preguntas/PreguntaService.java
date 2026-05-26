@@ -11,7 +11,7 @@ import com.miempresa.trabajoFinal.models.Tematica;
 public interface PreguntaService  {
     
     Page<Pregunta> listarPreguntas(Pageable pageable);
-    Page<Pregunta> filtrarPreguntas(Long tematicaId, String tipo, Pageable pageable);
+    Page<Pregunta> filtrarPreguntas(Long tematicaId, String tipo, String texto, Pageable pageable);
     Pregunta obtenerPregunta(Long id);
     Pregunta guardarPregunta(Pregunta pregunta);
     void eliminarPregunta(Long id);

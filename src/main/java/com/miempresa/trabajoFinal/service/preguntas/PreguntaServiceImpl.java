@@ -27,11 +27,12 @@ public class PreguntaServiceImpl implements PreguntaService {
     }
 
     @Override
-    public Page<Pregunta> filtrarPreguntas(Long tematicaId, String tipo, Pageable pageable) {
-        if (tematicaId == null && tipo == null) {
+    public Page<Pregunta> filtrarPreguntas(Long tematicaId, String tipo, String texto, Pageable pageable) {
+        if (texto != null && texto.isBlank()) texto = null;
+        if (tematicaId == null && tipo == null && texto == null) {
             return preguntaRepository.findAll(pageable);
         }
-        return preguntaRepository.filtrar(tematicaId, tipo, pageable);
+        return preguntaRepository.filtrar(tematicaId, tipo, texto, pageable);
     }
 
     @Override
