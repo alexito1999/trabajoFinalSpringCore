@@ -1,6 +1,7 @@
 INSERT IGNORE INTO usuarios (username, email, password, rol) VALUES ('admin', 'admin@email.com', '$2a$10$X96RyLm7Bke/CCruwI4Z2e0r7jD5QHsArms3Yy8P8QmYj.eVd1Q3m', 'ROLE_ADMIN');
 INSERT IGNORE INTO usuarios (username, email, password, rol) VALUES ('user', 'user@email.com', '$2a$10$I2W0EIDpHcG37TdRRZoAt.7lhNwtOMY5b0b3OaIKrlIFS26uIimpa', 'ROLE_USER');
-
+-- admin - admin123
+-- user  - user123
 
 INSERT INTO tematica (nombre) VALUES ('Programación');
 INSERT INTO tematica (nombre) VALUES ('Bases de Datos');

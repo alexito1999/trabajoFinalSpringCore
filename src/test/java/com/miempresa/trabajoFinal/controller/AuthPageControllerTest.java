@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -35,7 +36,12 @@ class AuthPageControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authPageController).build();
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/templates/");
+        viewResolver.setSuffix(".html");
+        mockMvc = MockMvcBuilders.standaloneSetup(authPageController)
+                .setViewResolvers(viewResolver)
+                .build();
     }
 
     @Test
@@ -57,7 +63,7 @@ class AuthPageControllerTest {
         when(usuarioService.existsByUsername(anyString())).thenReturn(false);
         when(usuarioService.existsByEmail(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        doNothing().when(usuarioService).registrar(any(Usuario.class));
+        when(usuarioService.registrar(any(Usuario.class))).thenReturn(new Usuario());
 
         mockMvc.perform(post("/registro")
                         .param("username", "testuser")

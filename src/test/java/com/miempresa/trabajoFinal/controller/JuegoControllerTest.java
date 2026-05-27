@@ -21,6 +21,9 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.*;
+
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @ExtendWith(MockitoExtension.class)
 class JuegoControllerTest {
@@ -33,14 +36,34 @@ class JuegoControllerTest {
 
     private MockMvc mockMvc;
 
+    private Tematica crearTematica(Long id, String nombre) {
+        Tematica t = new Tematica(nombre);
+        t.setId(id);
+        return t;
+    }
+
+    private PreguntaSeleccionUnica crearPreguntaSU(Long id, String enunciado, List<String> opciones, int opcionCorrecta, Tematica tematica) {
+        PreguntaSeleccionUnica p = new PreguntaSeleccionUnica(enunciado, opciones, opcionCorrecta);
+        p.setId(id);
+        p.setTematica(tematica);
+        return p;
+    }
+
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(juegoController).build();
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/templates/");
+        viewResolver.setSuffix(".html");
+        mockMvc = MockMvcBuilders.standaloneSetup(juegoController)
+                .setViewResolvers(viewResolver)
+                .build();
     }
 
     @Test
     void seleccionarTematica_returnsJugarViewWithTematicas() throws Exception {
-        List<Tematica> tematicas = Arrays.asList(new Tematica(1L, "Java"), new Tematica(2L, "Spring"));
+        Tematica java = crearTematica(1L, "Java");
+        Tematica spring = crearTematica(2L, "Spring");
+        List<Tematica> tematicas = Arrays.asList(java, spring);
         when(preguntaServiceImpl.listarTematicas()).thenReturn(tematicas);
 
         mockMvc.perform(get("/jugar"))
@@ -54,11 +77,12 @@ class JuegoControllerTest {
     @Test
     void jugar_withTematicaId_returnsJuegoViewWithQuestions() throws Exception {
         Long tematicaId = 1L;
-        Tematica tematica = new Tematica(tematicaId, "Java");
-        List<Pregunta> preguntas = Collections.singletonList(
-                new PreguntaSeleccionUnica(1L, "¿Qué es Java?", "Java", Arrays.asList("Java", "C++", "Python"), tematica)
+        Tematica tematica = crearTematica(tematicaId, "Java");
+        PreguntaSeleccionUnica pregunta = crearPreguntaSU(
+                1L, "Que es Java?", Arrays.asList("Java", "C++", "Python"), 0, tematica
         );
-        
+        List<Pregunta> preguntas = Collections.singletonList(pregunta);
+
         when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.singletonList(tematica));
         when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(preguntas);
 
@@ -70,17 +94,21 @@ class JuegoControllerTest {
                 .andExpect(model().attributeExists("totalDisponible"))
                 .andExpect(model().attributeExists("tematica"))
                 .andExpect(model().attribute("tematica", tematica))
-                .andExpect(model().attribute("activeJugar", true));
+                .andExpect(model().attribute("activeJugar", true))
+                .andExpect(model().attribute("preguntas", hasSize(1)));
     }
 
     @Test
     void jugar_withTematicaIdAndQuantity_returnsJuegoViewWithLimitedQuestions() throws Exception {
         Long tematicaId = 1L;
-        Tematica tematica = new Tematica(tematicaId, "Java");
-        List<Pregunta> preguntas = Arrays.asList(
-                new PreguntaSeleccionUnica(1L, "¿Qué es Java?", "Java", Arrays.asList("Java", "C++", "Python"), tematica),
-                new PreguntaSeleccionUnica(2L, "¿Qué es Spring?", "Spring", Arrays.asList("Spring", "Hibernate", "Maven"), tematica)
+        Tematica tematica = crearTematica(tematicaId, "Java");
+        PreguntaSeleccionUnica p1 = crearPreguntaSU(
+                1L, "Que es Java?", Arrays.asList("Java", "C++", "Python"), 0, tematica
         );
+        PreguntaSeleccionUnica p2 = crearPreguntaSU(
+                2L, "Que es Spring?", Arrays.asList("Spring", "Hibernate", "Maven"), 0, tematica
+        );
+        List<Pregunta> preguntas = Arrays.asList(p1, p2);
 
         when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.singletonList(tematica));
         when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(preguntas);
@@ -89,6 +117,68 @@ class JuegoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("juego"))
                 .andExpect(model().attributeExists("preguntas"))
-                .andExpect(model().attribute("total", 1)); // Expecting only 1 question due to quantity param
+                .andExpect(model().attribute("total", 1))
+                .andExpect(model().attribute("preguntas", hasSize(1)));
+    }
+
+    @Test
+    void jugar_withTematicaId_returnsAllQuestionsIfCantidadIsZeroOrNegative() throws Exception {
+        Long tematicaId = 1L;
+        Tematica tematica = crearTematica(tematicaId, "Java");
+        PreguntaSeleccionUnica p1 = crearPreguntaSU(
+                1L, "Que es Java?", Arrays.asList("Java", "C++", "Python"), 0, tematica
+        );
+        PreguntaSeleccionUnica p2 = crearPreguntaSU(
+                2L, "Que es Spring?", Arrays.asList("Spring", "Hibernate", "Maven"), 0, tematica
+        );
+        List<Pregunta> preguntas = Arrays.asList(p1, p2);
+
+        when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.singletonList(tematica));
+        when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(preguntas);
+
+        mockMvc.perform(get("/jugar/{tematicaId}", tematicaId).param("cantidad", "0"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("juego"))
+                .andExpect(model().attribute("total", 2))
+                .andExpect(model().attribute("preguntas", hasSize(2)));
+
+        mockMvc.perform(get("/jugar/{tematicaId}", tematicaId).param("cantidad", "-5"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("juego"))
+                .andExpect(model().attribute("total", 2))
+                .andExpect(model().attribute("preguntas", hasSize(2)));
+    }
+
+    @Test
+    void jugar_withTematicaId_returnsAllQuestionsIfCantidadIsGreaterThanAvailable() throws Exception {
+        Long tematicaId = 1L;
+        Tematica tematica = crearTematica(tematicaId, "Java");
+        PreguntaSeleccionUnica pregunta = crearPreguntaSU(
+                1L, "Que es Java?", Arrays.asList("Java", "C++", "Python"), 0, tematica
+        );
+        List<Pregunta> preguntas = Collections.singletonList(pregunta);
+
+        when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.singletonList(tematica));
+        when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(preguntas);
+
+        mockMvc.perform(get("/jugar/{tematicaId}", tematicaId).param("cantidad", "100"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("juego"))
+                .andExpect(model().attribute("total", 1))
+                .andExpect(model().attribute("preguntas", hasSize(1)));
+    }
+
+    @Test
+    void jugar_withNonExistentTematicaId_returnsJuegoViewWithNoQuestions() throws Exception {
+        Long nonExistentTematicaId = 99L;
+
+        when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.emptyList());
+        when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/jugar/{tematicaId}", nonExistentTematicaId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("juego"))
+                .andExpect(model().attribute("preguntas", hasSize(0)))
+                .andExpect(model().attribute("total", 0));
     }
 }
