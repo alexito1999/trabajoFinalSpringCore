@@ -1,7 +1,8 @@
 package com.miempresa.trabajoFinal.controller;
 
 import com.miempresa.trabajoFinal.models.Usuario;
-import com.miempresa.trabajoFinal.service.UsuarioService;
+import com.miempresa.trabajoFinal.service.usuario.UsuarioService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

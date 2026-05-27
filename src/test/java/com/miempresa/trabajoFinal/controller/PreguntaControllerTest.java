@@ -1,6 +1,5 @@
 package com.miempresa.trabajoFinal.controller;
 
-import com.miempresa.trabajoFinal.dto.PreguntaForm;
 import com.miempresa.trabajoFinal.models.Pregunta;
 import com.miempresa.trabajoFinal.service.preguntas.PreguntaServiceImpl;
 

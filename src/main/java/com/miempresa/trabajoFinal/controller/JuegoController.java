@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.miempresa.trabajoFinal.exceptions.TematicaNoEncontradaException;
 import com.miempresa.trabajoFinal.models.Pregunta;
+import com.miempresa.trabajoFinal.models.Tematica;
 import com.miempresa.trabajoFinal.models.PreguntaSeleccionMultiple;
 import com.miempresa.trabajoFinal.models.PreguntaSeleccionUnica;
 import com.miempresa.trabajoFinal.models.PreguntaVerdaderoFalso;
@@ -36,16 +38,20 @@ public class JuegoController {
                         @RequestParam(defaultValue = "10") int cantidad,
                         Model model) {
         List<Pregunta> preguntas = preguntaServiceImpl.listarPorTematica(tematicaId);
-        int totalDisponible = preguntas.size();
+
+        Tematica tematica;
+        try {
+            tematica = preguntaServiceImpl.obtenerTematica(tematicaId);
+        } catch (TematicaNoEncontradaException e) {
+            model.addAttribute("tematicas", preguntaServiceImpl.listarTematicas());
+            model.addAttribute("activeJugar", true);
+            return "jugar";
+        }
 
         if (cantidad > 0 && preguntas.size() > cantidad) {
             Collections.shuffle(preguntas);
             preguntas = preguntas.subList(0, cantidad);
         }
-
-        var tematica = preguntaServiceImpl.listarTematicas().stream()
-            .filter(t -> t.getId().equals(tematicaId))
-            .findFirst().orElse(null);
 
         // Build a list of simple DTOs for the view (instead of a JSON string)
         java.util.List<java.util.Map<String, Object>> preguntasDto = new java.util.ArrayList<>();
@@ -68,7 +74,6 @@ public class JuegoController {
         // Pass data to the view
         model.addAttribute("preguntas", preguntasDto);
         model.addAttribute("total", preguntasDto.size());
-        model.addAttribute("totalDisponible", totalDisponible);
         model.addAttribute("tematica", tematica);
         model.addAttribute("activeJugar", true);
         return "juego";

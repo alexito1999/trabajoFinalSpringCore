@@ -1,5 +1,6 @@
 package com.miempresa.trabajoFinal.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CollectionTable;
@@ -16,7 +17,7 @@ public class PreguntaSeleccionUnica extends Pregunta {
     @ElementCollection
     @CollectionTable(name = "su_opciones", joinColumns = @JoinColumn(name = "pregunta_id"))
     @Column(name = "opcion")
-    private List<String> opciones;
+    private List<String> opciones = new ArrayList<>();
 
     private int opcionCorrecta;
 

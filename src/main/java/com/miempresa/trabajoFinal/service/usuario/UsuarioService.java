@@ -1,4 +1,4 @@
-package com.miempresa.trabajoFinal.service;
+package com.miempresa.trabajoFinal.service.usuario;
 
 import com.miempresa.trabajoFinal.models.Usuario;
 

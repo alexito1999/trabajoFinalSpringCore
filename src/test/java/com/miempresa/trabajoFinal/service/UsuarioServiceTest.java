@@ -2,6 +2,7 @@ package com.miempresa.trabajoFinal.service;
 
 import com.miempresa.trabajoFinal.models.Usuario;
 import com.miempresa.trabajoFinal.repository.UsuarioRepository;
+import com.miempresa.trabajoFinal.service.usuario.UsuarioService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,6 @@ class UsuarioServiceTest {
         assertThat(usuarioService.existsByEmail("u1@t.com")).isTrue();
         assertThat(usuarioService.existsByEmail("u2@t.com")).isTrue();
         assertThat(usuarioService.existsByEmail("u3@t.com")).isFalse();
-
         assertThat(usuarioRepository.count()).isEqualTo(2);
     }
 }

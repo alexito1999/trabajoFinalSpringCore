@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/header :: head}">
+<head th:replace="~{fragments/header :: head(cssExtra='preguntas')}">
     <title th:text="${form.id != null} ? 'Editar Pregunta' : 'Nueva Pregunta'">Formulario</title>
 </head>
 

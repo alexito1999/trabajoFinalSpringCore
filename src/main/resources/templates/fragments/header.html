@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:fragment="head">
+<head th:fragment="head(cssExtra)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${titulo} ?: 'Trabajo Final'">Trabajo Final</title>
     <link rel="stylesheet" th:href="@{/bootstrap-5.3.8/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:if="${cssExtra != null}" th:href="@{|/css/${cssExtra}.css|}">
 </head>
 
 <body>

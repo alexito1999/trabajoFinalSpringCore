@@ -19,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.miempresa.trabajoFinal.exceptions.PreguntaNoEncontradaException;
+import com.miempresa.trabajoFinal.exceptions.TematicaNoEncontradaException;
 
 @SpringBootTest(properties = {"spring.sql.init.mode=never"})
 @Transactional
@@ -94,7 +98,8 @@ class PreguntaServiceTest {
 
     @Test
     void obtenerPregunta_inexistente_retornaNull() {
-        assertThat(preguntaService.obtenerPregunta(999L)).isNull();
+        assertThatThrownBy(() -> preguntaService.obtenerPregunta(999L))
+            .isInstanceOf(PreguntaNoEncontradaException.class);
     }
 
     @Test
@@ -104,7 +109,8 @@ class PreguntaServiceTest {
         Pregunta guardada = preguntaService.guardarPregunta(p);
 
         preguntaService.eliminarPregunta(guardada.getId());
-        assertThat(preguntaService.obtenerPregunta(guardada.getId())).isNull();
+        assertThatThrownBy(() -> preguntaService.obtenerPregunta(guardada.getId()))
+            .isInstanceOf(PreguntaNoEncontradaException.class);
         assertThat(preguntaService.contarPreguntas()).isZero();
     }
 
@@ -122,7 +128,8 @@ class PreguntaServiceTest {
 
     @Test
     void obtenerTematica_inexistente_retornaNull() {
-        assertThat(preguntaService.obtenerTematica(999L)).isNull();
+        assertThatThrownBy(() -> preguntaService.obtenerTematica(999L))
+            .isInstanceOf(TematicaNoEncontradaException.class);
     }
 
     @Test

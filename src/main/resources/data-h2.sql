@@ -1,3 +1,14 @@
+-- ============================================================
+-- DATOS DE EJEMPLO (perfil dev - H2)
+-- ============================================================
+-- USUARIOS:
+--   admin / admin123  (rol ADMIN)
+--   user  / user123   (rol USER)
+-- ============================================================
+-- TEMÁTICAS: Programación, Bases de Datos, Desarrollo Web, Herramientas
+-- PREGUNTAS: 20 VF, 8 SU, 9 SM  (44 preguntas total)
+-- ============================================================
+
 INSERT INTO usuarios (username, email, password, rol) VALUES ('admin', 'admin@email.com', '$2a$10$X96RyLm7Bke/CCruwI4Z2e0r7jD5QHsArms3Yy8P8QmYj.eVd1Q3m', 'ROLE_ADMIN');
 INSERT INTO usuarios (username, email, password, rol) VALUES ('user', 'user@email.com', '$2a$10$I2W0EIDpHcG37TdRRZoAt.7lhNwtOMY5b0b3OaIKrlIFS26uIimpa', 'ROLE_USER');
 -- admin - admin123
@@ -130,15 +141,6 @@ INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'NodeJS');
 INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'Bootstrap');
 INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'JUnit');
 
---ADICIONALES DE SM
-
-
-INSERT INTO pregunta (tipo, enunciado, opcion_correcta, tematica_id) VALUES ('SU', '¿Qué herramienta sirve para pruebas unitarias?', 3, 4);
-INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'Hibernate');
-INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'NodeJS');
-INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'Bootstrap');
-INSERT INTO su_opciones (pregunta_id, opcion) VALUES (35, 'JUnit');
-
 INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Cuáles son lenguajes de programación?', 1);
 INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (36, 'Java');
 INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (36, 'Python');
@@ -220,11 +222,3 @@ INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (44, 0);
 INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (44, 1);
 INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (44, 3);
 
-INSERT INTO pregunta (tipo, enunciado, tematica_id) VALUES ('SM', '¿Qué son sistemas gestores de bases de datos?', 2);
-INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (45, 'MySQL');
-INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (45, 'PostgreSQL');
-INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (45, 'MongoDB');
-INSERT INTO sm_opciones (pregunta_id, opcion) VALUES (45, 'VSCode');
-INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (45, 0);
-INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (45, 1);
-INSERT INTO sm_opciones_correctas (pregunta_id, indice) VALUES (45, 2);

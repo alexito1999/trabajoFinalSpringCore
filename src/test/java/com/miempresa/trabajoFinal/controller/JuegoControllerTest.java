@@ -83,7 +83,7 @@ class JuegoControllerTest {
         );
         List<Pregunta> preguntas = Collections.singletonList(pregunta);
 
-        when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.singletonList(tematica));
+        when(preguntaServiceImpl.obtenerTematica(tematicaId)).thenReturn(tematica);
         when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(preguntas);
 
         mockMvc.perform(get("/jugar/{tematicaId}", tematicaId))
@@ -91,7 +91,6 @@ class JuegoControllerTest {
                 .andExpect(view().name("juego"))
                 .andExpect(model().attributeExists("preguntas"))
                 .andExpect(model().attributeExists("total"))
-                .andExpect(model().attributeExists("totalDisponible"))
                 .andExpect(model().attributeExists("tematica"))
                 .andExpect(model().attribute("tematica", tematica))
                 .andExpect(model().attribute("activeJugar", true))
@@ -110,7 +109,7 @@ class JuegoControllerTest {
         );
         List<Pregunta> preguntas = Arrays.asList(p1, p2);
 
-        when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.singletonList(tematica));
+        when(preguntaServiceImpl.obtenerTematica(tematicaId)).thenReturn(tematica);
         when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(preguntas);
 
         mockMvc.perform(get("/jugar/{tematicaId}", tematicaId).param("cantidad", "1"))
@@ -133,7 +132,7 @@ class JuegoControllerTest {
         );
         List<Pregunta> preguntas = Arrays.asList(p1, p2);
 
-        when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.singletonList(tematica));
+        when(preguntaServiceImpl.obtenerTematica(tematicaId)).thenReturn(tematica);
         when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(preguntas);
 
         mockMvc.perform(get("/jugar/{tematicaId}", tematicaId).param("cantidad", "0"))
@@ -158,7 +157,7 @@ class JuegoControllerTest {
         );
         List<Pregunta> preguntas = Collections.singletonList(pregunta);
 
-        when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.singletonList(tematica));
+        when(preguntaServiceImpl.obtenerTematica(tematicaId)).thenReturn(tematica);
         when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(preguntas);
 
         mockMvc.perform(get("/jugar/{tematicaId}", tematicaId).param("cantidad", "100"))
@@ -169,16 +168,15 @@ class JuegoControllerTest {
     }
 
     @Test
-    void jugar_withNonExistentTematicaId_returnsJuegoViewWithNoQuestions() throws Exception {
+    void jugar_withNonExistentTematicaId_redirectsToJugar() throws Exception {
         Long nonExistentTematicaId = 99L;
 
+        when(preguntaServiceImpl.obtenerTematica(nonExistentTematicaId)).thenThrow(new com.miempresa.trabajoFinal.exceptions.TematicaNoEncontradaException(nonExistentTematicaId));
         when(preguntaServiceImpl.listarTematicas()).thenReturn(Collections.emptyList());
-        when(preguntaServiceImpl.listarPorTematica(anyLong())).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/jugar/{tematicaId}", nonExistentTematicaId))
                 .andExpect(status().isOk())
-                .andExpect(view().name("juego"))
-                .andExpect(model().attribute("preguntas", hasSize(0)))
-                .andExpect(model().attribute("total", 0));
+                .andExpect(view().name("jugar"))
+                .andExpect(model().attributeExists("tematicas"));
     }
 }

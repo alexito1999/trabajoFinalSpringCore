@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.miempresa.trabajoFinal.models.Usuario;
-import com.miempresa.trabajoFinal.service.UsuarioService;
+import com.miempresa.trabajoFinal.service.usuario.UsuarioService;
 
 @Controller
 public class AuthPageController {

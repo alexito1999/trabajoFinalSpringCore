@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/header :: head}">
+<head th:replace="~{fragments/header :: head(cssExtra='game')}">
     <title>Jugando</title>
 </head>
 
@@ -32,6 +32,7 @@
             <div class="row justify-content-center">
                 <div class="col-12 col-md-8 col-lg-6">
                     <div id="tarjeta-pregunta" class="question-card">
+                        <div class="question-card-accent"></div>
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <span class="badge-type" id="tipo-badge">Tipo</span>
                         </div>
@@ -123,11 +124,15 @@
                 barra.style.width = `${(indice / total) * 100}%`;
                 feedback.style.display = 'none';
                 bloqueado = false;
+                tarjeta.className = 'question-card';
+                tarjeta.classList.add('q-accent-' + p.tipo);
 
                 opcionesContainer.innerHTML = '';
                 botonesContainer.innerHTML = '';
 
+                tipoBadge.className = 'badge-type';
                 if (p.tipo === 'VF') {
+                    tipoBadge.classList.add('badge-VF');
                     tipoBadge.textContent = 'Verdadero / Falso';
                     const btnV = document.createElement('button');
                     btnV.className = 'btn-vf';
@@ -140,6 +145,7 @@
                     botonesContainer.appendChild(btnV);
                     botonesContainer.appendChild(btnF);
                 } else if (p.tipo === 'SU') {
+                    tipoBadge.classList.add('badge-SU');
                     tipoBadge.textContent = 'Selección única';
                     const grupo = document.createElement('div');
                     grupo.className = 'game-options';
@@ -175,6 +181,7 @@
                     });
                     botonesContainer.appendChild(btn);
                 } else if (p.tipo === 'SM') {
+                    tipoBadge.classList.add('badge-SM');
                     tipoBadge.textContent = 'Selección múltiple';
                     const grupo = document.createElement('div');
                     grupo.className = 'game-options';

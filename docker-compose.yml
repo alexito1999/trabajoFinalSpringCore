@@ -17,6 +17,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    profiles: ["prod"]
 
   app:
     build: .
@@ -29,6 +30,16 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    profiles: ["prod"]
+
+  app-dev:
+    build: .
+    container_name: trabajo-final-dev
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    profiles: ["dev"]
 
 volumes:
   mysql_data:

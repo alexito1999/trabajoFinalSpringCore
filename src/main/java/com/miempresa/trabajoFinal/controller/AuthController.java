@@ -16,7 +16,7 @@ import com.miempresa.trabajoFinal.dto.LoginRequest;
 import com.miempresa.trabajoFinal.dto.RegisterRequest;
 import com.miempresa.trabajoFinal.models.Usuario;
 import com.miempresa.trabajoFinal.security.JwtTokenProvider;
-import com.miempresa.trabajoFinal.service.UsuarioService;
+import com.miempresa.trabajoFinal.service.usuario.UsuarioService;
 
 import jakarta.validation.Valid;
 

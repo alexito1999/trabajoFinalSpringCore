@@ -1,5 +1,6 @@
 package com.miempresa.trabajoFinal.controller;
 
+import com.miempresa.trabajoFinal.exceptions.PreguntaNoEncontradaException;
 import com.miempresa.trabajoFinal.models.Pregunta;
 import com.miempresa.trabajoFinal.models.PreguntaVerdaderoFalso;
 import com.miempresa.trabajoFinal.models.Tematica;
@@ -111,7 +112,7 @@ class PreguntaApiControllerTest {
 
     @Test
     void obtener_porIdInexistente_retornaNotFound() throws Exception {
-        when(preguntaServiceImpl.obtenerPregunta(999L)).thenReturn(null);
+        when(preguntaServiceImpl.obtenerPregunta(999L)).thenThrow(new PreguntaNoEncontradaException(999L));
 
         mockMvc.perform(get("/api/preguntas/999")
                 .accept(MediaType.APPLICATION_JSON))

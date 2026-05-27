@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.miempresa.trabajoFinal.exceptions.PreguntaNoEncontradaException;
+import com.miempresa.trabajoFinal.exceptions.TematicaNoEncontradaException;
 import com.miempresa.trabajoFinal.models.Pregunta;
 import com.miempresa.trabajoFinal.models.Tematica;
 import com.miempresa.trabajoFinal.repository.PreguntaRepository;
@@ -37,7 +39,8 @@ public class PreguntaServiceImpl implements PreguntaService {
 
     @Override
     public Pregunta obtenerPregunta(Long id) {
-        return preguntaRepository.findById(id).orElse(null);
+        return preguntaRepository.findById(id)
+            .orElseThrow(() -> new PreguntaNoEncontradaException(id));
     }
 
     @Override
@@ -75,7 +78,8 @@ public class PreguntaServiceImpl implements PreguntaService {
 
     @Override
     public Tematica obtenerTematica(Long id) {
-        return tematicaRepository.findById(id).orElse(null);
+        return tematicaRepository.findById(id)
+            .orElseThrow(() -> new TematicaNoEncontradaException(id));
     }
 
     @Override

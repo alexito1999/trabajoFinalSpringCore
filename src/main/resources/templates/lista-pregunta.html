@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/header :: head}">
+<head th:replace="~{fragments/header :: head(cssExtra='preguntas')}">
     <title>Preguntas</title>
 </head>
 
@@ -23,33 +23,41 @@
             </a>
         </div>
 
-        <form th:action="@{/pregunta/listar}" method="get" class="filters-bar" onsubmit="return limpiarFiltros(this)">
-            <div class="filters-row">
-                <div class="filter-group">
-                    <label class="filter-label">Buscar</label>
-                    <input type="text" name="texto" class="form-control filter-select" placeholder="Buscar por texto..."
-                           th:value="${textoBusqueda}">
+        <div class="filters-card">
+            <form th:action="@{/pregunta/listar}" method="get" class="filters-bar" onsubmit="return limpiarFiltros(this)">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Buscar</label>
+                        <input type="text" name="texto" class="form-control filter-select" placeholder="Buscar por texto..."
+                               th:value="${textoBusqueda}">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Temática</label>
+                        <select name="tematicaId" class="form-select filter-select">
+                            <option value="">Todas las temáticas</option>
+                            <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"
+                                    th:selected="${tematicaId == t.id}"></option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Tipo</label>
+                        <select name="tipo" class="form-select filter-select">
+                            <option value="">Todos los tipos</option>
+                            <option value="VF" th:selected="${tipoFiltro == 'VF'}">Verdadero / Falso</option>
+                            <option value="SU" th:selected="${tipoFiltro == 'SU'}">Selección única</option>
+                            <option value="SM" th:selected="${tipoFiltro == 'SM'}">Selección múltiple</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-filter">Filtrar</button>
+                    <a th:href="@{/pregunta/listar}" class="btn-filter-reset" title="Limpiar filtros">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 3.5a4.5 4.5 0 0 0-4.5 4.5.5.5 0 0 1-1 0A5.5 5.5 0 0 1 8 2.5V1l2.5 2L8 5V3.5z"/>
+                            <path d="M8 12.5A4.5 4.5 0 0 0 12.5 8a.5.5 0 0 1 1 0 5.5 5.5 0 0 1-5.5 5.5V15l-2.5-2 2.5-2v1.5z"/>
+                        </svg>
+                    </a>
                 </div>
-                <div class="filter-group">
-                    <label class="filter-label">Temática</label>
-                    <select name="tematicaId" class="form-select filter-select">
-                        <option value="">Todas las temáticas</option>
-                        <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"
-                                th:selected="${tematicaId == t.id}"></option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label class="filter-label">Tipo</label>
-                    <select name="tipo" class="form-select filter-select">
-                        <option value="">Todos los tipos</option>
-                        <option value="VF" th:selected="${tipoFiltro == 'VF'}">Verdadero / Falso</option>
-                        <option value="SU" th:selected="${tipoFiltro == 'SU'}">Selección única</option>
-                        <option value="SM" th:selected="${tipoFiltro == 'SM'}">Selección múltiple</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-filter">Filtrar</button>
-            </div>
-        </form>
+            </form>
+        </div>
         <script>
             function limpiarFiltros(form) {
                 var selects = form.querySelectorAll('select');
@@ -68,11 +76,12 @@
             }
         </script>
 
-        <div class="row g-3">
+        <div class="row g-3 questions-grid">
             <div th:each="pregunta : ${pagina.content}" class="col-md-6 col-lg-4">
-                <div class="question-card">
+                <div class="question-card" th:classappend="|q-accent-${pregunta.tipo}|">
+                    <div class="question-card-accent"></div>
                     <div class="question-card-header">
-                        <span class="badge-type" th:text="${pregunta.mostrarTipo()}">Tipo</span>
+                        <span class="badge-type" th:classappend="|badge-${pregunta.tipo}|" th:text="${pregunta.mostrarTipo()}">Tipo</span>
                         <span class="badge-topic" th:if="${pregunta.tematica}" th:text="${pregunta.tematica.nombre}">Temática</span>
                     </div>
                     <p class="question-text" th:text="${pregunta.enunciado}">Enunciado</p>
@@ -98,7 +107,13 @@
         </div>
 
         <div th:if="${pagina.totalElements == 0}" class="empty-state">
-            <p class="text-muted mb-0">No hay preguntas registradas.</p>
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                </svg>
+            </div>
+            <p class="empty-title">No hay preguntas</p>
+            <p class="text-muted mb-0">Aún no se ha registrado ninguna pregunta.</p>
             <a th:if="${autenticado}" th:href="@{/pregunta/nueva}" class="btn-submit btn-submit-sm mt-3">Crear primera pregunta</a>
         </div>
 

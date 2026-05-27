@@ -1,4 +1,4 @@
-package com.miempresa.trabajoFinal.service;
+package com.miempresa.trabajoFinal.service.usuario;
 
 import org.springframework.stereotype.Service;
 

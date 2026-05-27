@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.miempresa.trabajoFinal.dto.PreguntaRequest;
 import com.miempresa.trabajoFinal.dto.PreguntaResponse;
+import com.miempresa.trabajoFinal.exceptions.PreguntaNoEncontradaException;
+import com.miempresa.trabajoFinal.exceptions.TematicaNoEncontradaException;
 import com.miempresa.trabajoFinal.models.Pregunta;
 import com.miempresa.trabajoFinal.models.PreguntaSeleccionMultiple;
 import com.miempresa.trabajoFinal.models.PreguntaSeleccionUnica;
@@ -59,19 +61,22 @@ public class PreguntaApiController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener pregunta por ID", description = "Devuelve los detalles de una pregunta específica")
     public ResponseEntity<PreguntaResponse> obtener(@PathVariable Long id) {
-        Pregunta pregunta = preguntaServiceImpl.obtenerPregunta(id);
-        if (pregunta == null) {
+        try {
+            Pregunta pregunta = preguntaServiceImpl.obtenerPregunta(id);
+            return ResponseEntity.ok(toResponse(pregunta));
+        } catch (PreguntaNoEncontradaException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(toResponse(pregunta));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Crear pregunta", description = "Crea una nueva pregunta")
     public ResponseEntity<PreguntaResponse> crear(@Valid @RequestBody PreguntaRequest request) {
-        Tematica tematica = preguntaServiceImpl.obtenerTematica(request.getTematicaId());
-        if (tematica == null) {
+        Tematica tematica;
+        try {
+            tematica = preguntaServiceImpl.obtenerTematica(request.getTematicaId());
+        } catch (TematicaNoEncontradaException e) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -88,13 +93,17 @@ public class PreguntaApiController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Actualizar pregunta", description = "Actualiza una pregunta existente")
     public ResponseEntity<PreguntaResponse> actualizar(@PathVariable Long id, @Valid @RequestBody PreguntaRequest request) {
-        Pregunta existente = preguntaServiceImpl.obtenerPregunta(id);
-        if (existente == null) {
+        Pregunta existente;
+        try {
+            existente = preguntaServiceImpl.obtenerPregunta(id);
+        } catch (PreguntaNoEncontradaException e) {
             return ResponseEntity.notFound().build();
         }
 
-        Tematica tematica = preguntaServiceImpl.obtenerTematica(request.getTematicaId());
-        if (tematica == null) {
+        Tematica tematica;
+        try {
+            tematica = preguntaServiceImpl.obtenerTematica(request.getTematicaId());
+        } catch (TematicaNoEncontradaException e) {
             return ResponseEntity.badRequest().build();
         }
 

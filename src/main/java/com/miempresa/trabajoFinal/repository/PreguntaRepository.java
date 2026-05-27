@@ -13,7 +13,6 @@ import java.util.List;
 
 public interface PreguntaRepository extends JpaRepository<Pregunta, Long>{
     List<Pregunta> findByTematicaId(Long tematicaId);
-    Page<Pregunta> findByTematicaId(Long tematicaId, Pageable pageable);
 
     @Query("SELECT p FROM Pregunta p WHERE " +
            "(:tematicaId IS NULL OR p.tematica.id = :tematicaId) AND " +
